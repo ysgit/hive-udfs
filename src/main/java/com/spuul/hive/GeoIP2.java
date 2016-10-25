@@ -197,6 +197,7 @@ public class GeoIP2 extends GenericUDF {
                     || dataType.equals("POSTAL_CODE")
                     || dataType.equals("LONGITUDE")
                     || dataType.equals("LATITUDE")
+                    || dataType.equals("METRO_CODE")
                 ) {
                         if (dataType.equals("COUNTRY_CODE") || dataType.equals("COUNTRY_NAME")) {
                                 Country country = response.getCountry();
@@ -224,13 +225,15 @@ public class GeoIP2 extends GenericUDF {
                                 Postal postal = response.getPostal();
                                 return postal.getCode();
                         }
-                        if (dataType.equals("LONGITUDE") || dataType.equals("LATITUDE")) {
+                        if (dataType.equals("LONGITUDE") || dataType.equals("LATITUDE") || dataType.equals("METRO_CODE")) {
                                 Location location = response.getLocation();
-                                if (dataType.equals("LONGITUDE")) {
-                                        return location.getLongitude().toString();
-                                }
-                                else {
-                                        return location.getLatitude().toString();
+                                switch (dataType) {
+                                        case "LONGITUDE":
+                                                return location.getLongitude().toString();
+                                        case "LATITUDE":
+                                                return location.getLatitude().toString();
+                                        default:
+                                                return location.getMetroCode().toString();
                                 }
                         }
                         return "";
